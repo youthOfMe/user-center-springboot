@@ -1,4 +1,5 @@
 package com.niuma.usercenter.service.impl;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.niuma.usercenter.common.ErrorCode;
@@ -53,6 +54,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (count > 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号重复");
         }
+        // 2. 加密
+        // DigestUtils.md5DigestAsHex();
 
         return 0;
     }
