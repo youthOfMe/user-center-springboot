@@ -2,6 +2,8 @@ package com.niuma.usercenter.service;
 
 import com.niuma.usercenter.model.domain.User;
 
+import javax.servlet.http.HttpServletRequest;
+
 public interface UserService {
 
     /**
@@ -21,4 +23,13 @@ public interface UserService {
      * @return
      */
     User getSafetyUser(User originUser);
+
+    /**
+     * 用户登录
+     * @param userAccount
+     * @param userPassword
+     * @param request
+     * @return
+     */
+    User userLogin(String userAccount, String userPassword, HttpServletRequest request);
 }

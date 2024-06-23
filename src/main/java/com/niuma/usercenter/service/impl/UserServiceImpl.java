@@ -13,8 +13,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.niuma.usercenter.constant.UserContant.USER_LOGIN_STATE;
 
 @Service
 @Slf4j
@@ -107,5 +110,47 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return safetyUser;
     }
 
+    /**
+     * 用户登录
+     * @param userAccount
+     * @param userPassword
+     * @param request
+     * @return
+     */
+    public User userLogin(String userAccount, String userPassword, HttpServletRequest request) {
+        // 1. 校验
+        if (StringUtils.isAnyBlank(userAccount, userPassword)) {
+            return null;
+        }
+        if (userAccount.length() < 4) {
+            return null;
+        }
+        if (userPassword.length() < 8) {
+            return null;
+        }
+        // 账号不能包含特殊字符
+        String validPattern = "^[/|\\\\\\\\]*$";
+        Matcher matcher = Pattern.compile(validPattern).matcher(userAccount);
+        if (matcher.find()) {
+            return null;
+        }
+        // 2. 加密
+        String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
+        // 查询用户是否存在
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("userAccount", userAccount);
+        queryWrapper.eq("userPassword", encryptPassword);
+        User user = userMapper.selectOne(queryWrapper);
+        // 用户不存在
+        if (user == null) {
+            log.info("user login failed, userAccount cannot match userPassword");
+            return null;
+        }
+        // 3. 用户脱敏
+        User safetyUser = getSafetyUser(user);
+        // 4. 记录用户的登录态
+        request.getSession().setAttribute(USER_LOGIN_STATE, safetyUser);
 
+        return safetyUser;
+    }
 }
