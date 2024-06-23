@@ -100,5 +100,6 @@ public class User implements Serializable {
     private String planetCode;
 
     // 标签
+    @TableField(value = "tags")
     private String tags;
 }

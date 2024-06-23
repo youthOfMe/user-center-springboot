@@ -10,6 +10,7 @@ import com.niuma.usercenter.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import java.util.regex.Matcher;
@@ -21,6 +22,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Resource
     private UserMapper userMapper;
+
+    /**
+     * 盐值 混淆密码
+     */
+    private static final String SALT = "wobushiXingHai";
 
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword, String planetCode) {
@@ -50,13 +56,29 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 账户不能重复
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("userAccount", userAccount);
-        Long count = userMapper.selectCount(queryWrapper);
+        long count = userMapper.selectCount(queryWrapper);
         if (count > 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号重复");
         }
+        // 邀请码不能重复
+        queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("plantCode", userAccount);
+        count = userMapper.selectCount(queryWrapper);
+        if (count > 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "邀请码已经被使用了");
+        }
         // 2. 加密
-        // DigestUtils.md5DigestAsHex();
+        String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
+        // 3. 插入数据
+        User user = new User();
+        user.setUserAccount(userAccount);
+        user.setUserPassword(encryptPassword);
+        user.setPlanetCode(planetCode);
+        boolean saveResult = this.save(user);
+        if (!saveResult) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
 
-        return 0;
+        return user.getId();
     }
 }
