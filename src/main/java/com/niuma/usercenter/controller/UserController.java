@@ -107,6 +107,24 @@ public class UserController {
     }
 
     /**
+     * 获取当前登录用户信息
+     * @param request
+     * @return
+     */
+    @PostMapping("/current")
+    public BaseResponse<User> getCurrentUser(HttpServletRequest request) {
+        User currentUser = (User) request.getSession().getAttribute(USER_LOGIN_STATE);
+        if (currentUser == null) {
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
+        }
+        Long userId = currentUser.getId();
+        // todo 校验用户是否合法
+        User user = userService.getById(userId);
+        user = userService.getSafetyUser(user);
+        return ResultUtils.success(user);
+    }
+
+    /**
      * 是否为管理员
      * @param request
      * @return
