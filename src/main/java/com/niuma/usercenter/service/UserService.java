@@ -32,4 +32,11 @@ public interface UserService {
      * @return
      */
     User userLogin(String userAccount, String userPassword, HttpServletRequest request);
+
+    /**
+     * 退出登录
+     * @param request
+     * @return
+     */
+    int userLogout(HttpServletRequest request);
 }

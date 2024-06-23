@@ -8,6 +8,7 @@ import com.niuma.usercenter.model.domain.User;
 import com.niuma.usercenter.model.domain.request.UserLoginRequest;
 import com.niuma.usercenter.model.domain.request.UserRegisterRequest;
 import com.niuma.usercenter.service.UserService;
+import io.swagger.models.auth.In;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,6 +62,20 @@ public class UserController {
         }
         User user = userService.userLogin(userAccount, userPassword, request);
         return ResultUtils.success(user);
+    }
+
+    /**
+     * 退出登录
+     * @param request
+     * @return
+     */
+    @PostMapping("/logout")
+    public BaseResponse<Integer> userLogout(HttpServletRequest request) {
+        if (request == null) {
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
+        }
+        int result = userService.userLogout(request);
+        return ResultUtils.success(result);
     }
 
 }
