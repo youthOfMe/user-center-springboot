@@ -31,6 +31,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     private static final String SALT = "wobushiXingHai";
 
+    /**
+     * 注册
+     * @param userAccount 用户账户
+     * @param userPassword 用户密码
+     * @param checkPassword 校验密码
+     * @param planetCode 新用户ID
+     * @return
+     */
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword, String planetCode) {
         // 1. 校验

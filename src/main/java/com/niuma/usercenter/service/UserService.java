@@ -1,10 +1,11 @@
 package com.niuma.usercenter.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.niuma.usercenter.model.domain.User;
 
 import javax.servlet.http.HttpServletRequest;
 
-public interface UserService {
+public interface UserService extends IService<User> {
 
     /**
      * 用户注册
