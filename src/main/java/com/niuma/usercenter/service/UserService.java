@@ -1,5 +1,7 @@
 package com.niuma.usercenter.service;
 
+import com.niuma.usercenter.model.domain.User;
+
 public interface UserService {
 
     /**
@@ -12,4 +14,11 @@ public interface UserService {
      * @return
      */
     long userRegister(String userAccount, String userPassword, String checkPassword, String planetCode);
+
+    /**
+     * 用户脱敏
+     * @param originUser
+     * @return
+     */
+    User getSafetyUser(User originUser);
 }
