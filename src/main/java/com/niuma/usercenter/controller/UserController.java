@@ -10,10 +10,7 @@ import com.niuma.usercenter.model.domain.request.UserLoginRequest;
 import com.niuma.usercenter.model.domain.request.UserRegisterRequest;
 import com.niuma.usercenter.service.UserService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -122,6 +119,20 @@ public class UserController {
         User user = userService.getById(userId);
         user = userService.getSafetyUser(user);
         return ResultUtils.success(user);
+    }
+
+    @DeleteMapping("/delete")
+    public BaseResponse<Boolean> deleteUsers(Integer id, HttpServletRequest request) {
+        // 仅管理员可以删除
+        if (!isAdmin(request)) {
+            return ResultUtils.error(ErrorCode.NO_AUTH);
+        }
+
+        if (id <= 0) {
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
+        }
+        boolean isSuccess = userService.removeById(id);
+        return ResultUtils.success(isSuccess);
     }
 
     /**
