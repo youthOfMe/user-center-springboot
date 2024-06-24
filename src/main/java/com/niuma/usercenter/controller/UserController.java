@@ -1,6 +1,8 @@
 package com.niuma.usercenter.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.gson.Gson;
 import com.niuma.usercenter.common.BaseResponse;
 import com.niuma.usercenter.common.ErrorCode;
 import com.niuma.usercenter.common.ResultUtils;
@@ -54,6 +56,7 @@ public class UserController {
      */
     @PostMapping("/login")
     public BaseResponse<User> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
+        System.out.println("===========================");
         if (userLoginRequest == null) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
@@ -78,6 +81,17 @@ public class UserController {
         }
         int result = userService.userLogout(request);
         return ResultUtils.success(result);
+    }
+
+    @GetMapping("/list")
+    public BaseResponse<Page<User>> listUsers(long pageSize, long pageNum, HttpServletRequest request) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        Page<User> userPage = userService.page(new Page<>(pageNum, pageSize), queryWrapper);
+        Gson gson = new Gson();
+        for (User record : userPage.getRecords()) {
+            record.setTagList(gson.fromJson(record.getTags(), List.class));
+        }
+        return ResultUtils.success(userPage);
     }
 
     /**

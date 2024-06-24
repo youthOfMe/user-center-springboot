@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 用户表
@@ -102,4 +103,7 @@ public class User implements Serializable {
     // 标签
     @TableField(value = "tags")
     private String tags;
+
+    @TableField(exist = false)
+    private List<String> tagList;
 }
