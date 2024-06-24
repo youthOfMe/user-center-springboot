@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.Date;
  * @TableName block
  */
 @TableName(value ="block")
+@Data
 public class Block implements Serializable {
     /**
      * 主键ID
@@ -23,32 +25,38 @@ public class Block implements Serializable {
     /**
      * 板块名称
      */
+    @TableField("name")
     private String name;
 
     /**
      * 板块信息
      */
+    @TableField("info")
     private String info;
 
     /**
      * 创建时间
      */
-    private Date createtime;
+    @TableField("createTime")
+    private Date createTime;
 
     /**
      * 更新时间
      */
-    private Date updatetime;
+    @TableField("updateTime")
+    private Date updateTime;
 
     /**
      * 板块状态 0 = 可用 1 = 不可用
      */
+    @TableField("status")
     private Integer status;
 
     /**
      * 是否删除板块 0 =不删除 1 = 删除
      */
-    private Integer isdelete;
+    @TableField("isDelete")
+    private Integer isDelete;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
